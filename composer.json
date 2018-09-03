@@ -1,0 +1,22 @@
+{
+    "name": "verse/router",
+    "description": "Router is library for wrapping AMQP messaging",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Denisov Mikhail",
+            "email": "manwebdev@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Verse\\Router\\": "src/Verse/Router"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Verse\\Router\\": "tests/Verse/Router"}
+    },
+    "suggest": {
+        "ext-amqp": "This library required to have AMQP extension installed"
+    },
+    "require": {}
+}
