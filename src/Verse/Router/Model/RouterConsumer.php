@@ -54,7 +54,6 @@ class RouterConsumer extends RouterModuleProto
     {
         $this->loadDeps();
         
-        // @todo check is callable
         $this->callback = $this->getConfig(RouterConfig::CONSUMER_CALLBACK);
     }
     
@@ -66,8 +65,6 @@ class RouterConsumer extends RouterModuleProto
     public function recovery()
     {
         $this->loadDeps();
-//        $this->routerConnection->recovery();
-//        $this->routerChannel->recovery();
         $this->routerQueue->recovery();
     }
     
@@ -106,7 +103,7 @@ class RouterConsumer extends RouterModuleProto
             );
         } catch (\AMQPConnectionException $e) {
             if ($e->getMessage() !== self::TIMEOUT_EXCEPTION_OLD) {
-                $this->_reportProblem(__METHOD__.' has AMQPConnectionException: '.$e->getMessage());
+                throw $e;
             }
         } catch (\AMQPQueueException $e) {
             $isRegularTimeout = strpos($e->getMessage(), self::TIMEOUT_EXCEPTION_TEXT) === 0;
@@ -119,7 +116,7 @@ class RouterConsumer extends RouterModuleProto
                     
                 }
                 
-                $this->_reportProblem(__METHOD__.' has AMQPQueueException: '.$e->getMessage());
+                throw $e;  
             }
         }
         

@@ -4,7 +4,8 @@
 namespace Verse\Router;
 
 
-use Mu\Env;
+use Psr\Log\LoggerInterface;
+use Verse\Di\Env;
 
 class RouterProblemResolver
 {
@@ -30,10 +31,13 @@ class RouterProblemResolver
         
         $this->reports[$moduleId] = $report;
     
-        Env::getLogger()->error(__CLASS__.' "'.$report.'" problem on '.$moduleId, [
-            'server' => get_object_vars($this),
-        ]);
-        
+        if ($logger = Env::getContainer()->bootstrap(LoggerInterface::class, false)) {
+            /* @var $logger LoggerInterface */
+            $logger->error(__CLASS__.' "'.$report.'" problem on '.$moduleId, [
+                'server' => get_object_vars($this),
+            ]);
+        }
+                
         return true;
     }
 }

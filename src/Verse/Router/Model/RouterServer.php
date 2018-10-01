@@ -263,13 +263,15 @@ class RouterServer
     public function getConnection($thread, $configuration = [])
     {
         if (!isset($this->connections[$thread])) {
-            $configuration = $configuration + [
-                    RouterConfig::ROUTER_CONNECTION_HOST            => $this->host,
-                    RouterConfig::ROUTER_CONNECTION_PORT            => $this->port,
-                    RouterConfig::ROUTER_CONNECTION_READ_TIMEOUT    => RouterConfig::ROUTER_CONNECTION_DEFAULT_READ_TIMEOUT,
-                    RouterConfig::ROUTER_CONNECTION_WRITE_TIMEOUT   => RouterConfig::ROUTER_CONNECTION_DEFAULT_WRITE_TIMEOUT,
-                    RouterConfig::ROUTER_CONNECTION_CONNECT_TIMEOUT => RouterConfig::ROUTER_CONNECTION_DEFAULT_CONNECT_TIMEOUT,
-                ];
+            $configuration += [
+                RouterConfig::ROUTER_CONNECTION_HOST            => $this->host,
+                RouterConfig::ROUTER_CONNECTION_PORT            => $this->port,
+                RouterConfig::ROUTER_CONNECTION_LOGIN           => $this->user,
+                RouterConfig::ROUTER_CONNECTION_PASSWORD        => $this->password,
+                RouterConfig::ROUTER_CONNECTION_READ_TIMEOUT    => RouterConfig::ROUTER_CONNECTION_DEFAULT_READ_TIMEOUT,
+                RouterConfig::ROUTER_CONNECTION_WRITE_TIMEOUT   => RouterConfig::ROUTER_CONNECTION_DEFAULT_WRITE_TIMEOUT,
+                RouterConfig::ROUTER_CONNECTION_CONNECT_TIMEOUT => RouterConfig::ROUTER_CONNECTION_DEFAULT_CONNECT_TIMEOUT,
+            ];
             $connection    = new RouterConnection($this, $thread, $configuration);
             $connection->setup();
             
