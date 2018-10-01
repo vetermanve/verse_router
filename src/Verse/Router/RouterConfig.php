@@ -7,9 +7,11 @@ namespace Verse\Router;
 class RouterConfig
 {
     const SERVER_TAG_DEFAULT = 'default';
-    
-    const AMQP_RABBIT_DEFAULT_PORT = 5672;
-    const AMQP_RABBIT_DEFAULT_HOST = 'localhost';
+
+    const AMQP_RABBIT_DEFAULT_PORT     = 5672;
+    const AMQP_RABBIT_DEFAULT_HOST     = 'localhost';
+    const AMQP_RABBIT_DEFAULT_LOGIN    = 'guest';
+    const AMQP_RABBIT_DEFAULT_PASSWORD = 'guest';
     
     const REASON_MAIN = 'main';
     
@@ -36,6 +38,9 @@ class RouterConfig
     /* connection config */
     const ROUTER_CONNECTION_HOST            = 'host';
     const ROUTER_CONNECTION_PORT            = 'port';
+    const ROUTER_CONNECTION_LOGIN           = 'login';
+    const ROUTER_CONNECTION_PASSWORD        = 'password';
+    
     const ROUTER_CONNECTION_READ_TIMEOUT    = 'read_timeout';
     const ROUTER_CONNECTION_WRITE_TIMEOUT   = 'write_timeout';
     const ROUTER_CONNECTION_CONNECT_TIMEOUT = 'connect_timeout';

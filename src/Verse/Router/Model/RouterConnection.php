@@ -15,7 +15,9 @@ class RouterConnection extends RouterModuleProto
     const READ_TIMEOUT    = 'read_timeout';
     const WRITE_TIMEOUT   = 'write_timeout';
     const CONNECT_TIMEOUT = 'connect_timeout';
-    
+    const LOGIN           = 'login';
+    const PASSWORD        = 'password';
+
     /**
      * @var AMQPConnection;
      */
@@ -26,15 +28,12 @@ class RouterConnection extends RouterModuleProto
         $connectionData = [
             self::HOST            => $this->configuration[RouterConfig::ROUTER_CONNECTION_HOST],
             self::PORT            => $this->configuration[RouterConfig::ROUTER_CONNECTION_PORT],
+            self::LOGIN           => $this->configuration[RouterConfig::ROUTER_CONNECTION_LOGIN],
+            self::PASSWORD        => $this->configuration[RouterConfig::ROUTER_CONNECTION_PASSWORD],
+            
             self::READ_TIMEOUT    => $this->configuration[RouterConfig::ROUTER_CONNECTION_READ_TIMEOUT],
             self::WRITE_TIMEOUT   => $this->configuration[RouterConfig::ROUTER_CONNECTION_WRITE_TIMEOUT],
             self::CONNECT_TIMEOUT => $this->configuration[RouterConfig::ROUTER_CONNECTION_CONNECT_TIMEOUT],
-
-
-//            'login' => 'dev_all',
-//            'password' => 'dev_all',
-            //     *      'login' => amqp.login The login name to use. Note: Max 128 characters.
-            //     *      'password' => amqp.password Password. Note: Max 128 characters.
         ];
         
         $connection = new \AMQPConnection($connectionData);

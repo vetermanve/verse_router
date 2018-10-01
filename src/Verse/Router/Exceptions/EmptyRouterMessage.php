@@ -4,7 +4,7 @@
 namespace Verse\Router\Exceptions;
 
 
-class EmptyRouterMessage extends \Exception
+class EmptyRouterMessage extends \RuntimeException
 {
     
 }

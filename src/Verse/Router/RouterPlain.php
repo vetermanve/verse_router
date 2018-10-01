@@ -4,9 +4,7 @@
 namespace Verse\Router;
 
 
-use Mu\Env;
 use Verse\Router\Exceptions\EmptyRouterMessage;
-use Uuid\Uuid;
 
 class RouterPlain
 {
@@ -42,8 +40,6 @@ class RouterPlain
     
     /**
      * Инициализация модуля
-     *
-     * @param \Mu\Interfaces\ConfigInterface $config
      *
      * @return $this
      */
@@ -134,7 +130,7 @@ class RouterPlain
         
         $messageString = $this->_prepareMessage($replyData);
         
-        if (is_null($messageString)) {
+        if ($messageString === null) {
             throw new EmptyRouterMessage();
         }
         
@@ -419,11 +415,21 @@ class RouterPlain
     }
     
     /**
-     * @return string
+     * @return string (Uuid-v4)
      */
-    private function _getCorrelationId()
+    private function _getCorrelationId() : string
     {
-        return Uuid::v4();
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            random_int(0, 0xffff),
+            random_int(0, 0xffff),
+            random_int(0, 0xffff),
+            random_int(0, 0x0fff) | 0x4000,
+            random_int(0, 0x3fff) | 0x8000,
+            random_int(0, 0xffff),
+            random_int(0, 0xffff),
+            random_int(0, 0xffff)
+        );
     }
     
     /**

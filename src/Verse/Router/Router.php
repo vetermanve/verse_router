@@ -4,22 +4,17 @@
 namespace Verse\Router;
 
 
-use Mu\Env;
+use Uuid;
 use Verse\Router\Actors\RouterRequestConsumer;
 use Verse\Router\Exceptions\EmptyRouterMessage;
+use Verse\Router\Exceptions\ServerNotConfigured;
 use Verse\Router\Model\RouterServer;
-use Uuid\Uuid;
 
 class Router
 {
     const THREAD_MAIN          = 'main';
     const REASON_CONSUME_REPLY = 'consumeReply';
     const THREAD_CONSUME       = 'consume:';
-    
-    /**
-     * @var RouterServer[]
-     */
-    private $servers = [];
     
     private $nodeId = '';
     
@@ -47,21 +42,28 @@ class Router
     /**
      * PUBLIC API
      */
-    
+
     /**
      * Инициализация модуля
      *
-     * @param \Mu\Interfaces\ConfigInterface $config
-     *
-     * @return $this
+     * @param array $config
+     * 
+     * @return $this|\Verse\Router\Router
      */
-    public function init($config = null)
+    public function init(array $config = []) : self
     {
-        $config = $config ?: Env::getLegacyConfig();
-        $host   = $config->get('host', 'amqp', RouterConfig::AMQP_RABBIT_DEFAULT_HOST);
-        $port   = $config->get('port', 'amqp', RouterConfig::AMQP_RABBIT_DEFAULT_PORT);
+        $host = $config[RouterConfig::ROUTER_CONNECTION_HOST] ?? RouterConfig::AMQP_RABBIT_DEFAULT_HOST;
+        $port = $config[RouterConfig::ROUTER_CONNECTION_PORT] ?? RouterConfig::AMQP_RABBIT_DEFAULT_PORT;
+        $login = $config[RouterConfig::ROUTER_CONNECTION_LOGIN] ?? RouterConfig::AMQP_RABBIT_DEFAULT_LOGIN;
+        $password = $config[RouterConfig::ROUTER_CONNECTION_PASSWORD] ?? RouterConfig::AMQP_RABBIT_DEFAULT_PASSWORD;
         
-        $defaultServer = new RouterServer($host, $port, RouterConfig::SERVER_TAG_DEFAULT);
+        $defaultServer = new RouterServer(
+            $host, 
+            $port,
+            $login, 
+            $password,
+            RouterConfig::SERVER_TAG_DEFAULT
+        );
         
         $this->registry->registerServer($defaultServer);
         
@@ -105,7 +107,7 @@ class Router
         
         $queueName = $this->_prepareQueueName($queueNameRaw);
         
-        $server = $this->registry->findServerForQueue($queueName, RouterConfig::SERVER_TAG_DEFAULT);
+        $server = $this->_getServerOrFail($queueName, RouterConfig::SERVER_TAG_DEFAULT);
         
         $publisher = $server->getPublisher($thread);
         
@@ -133,19 +135,18 @@ class Router
         $queueName = $this->_prepareQueueName($replyQueue);
         
         $messageString = $this->_prepareMessage($replyData);
-        
-        if (is_null($messageString)) {
-            throw new EmptyRouterMessage();
+        if ($messageString === null) {
+            throw new EmptyRouterMessage('Message body is empty or cannot be encoded');
         }
         
-        $server = $this->registry->findServerForQueue($queueName, RouterConfig::SERVER_TAG_DEFAULT);
+        $server = $this->_getServerOrFail($queueName, RouterConfig::SERVER_TAG_DEFAULT);
+        
         $publisher = $server->getPublisher(self::THREAD_MAIN);
         
         $params = [
             'correlation_id' => $corrId, // Связующий ID
         ];
         
-        // @todo проверить свзяь тредов через свзяующий айди
         return $publisher->publish($messageString, $queueName, $params);
     }
     
@@ -163,7 +164,7 @@ class Router
         $queueName = $this->_prepareQueueName($queueName);
         $thread    = self::THREAD_CONSUME . $queueName.':'.$timeout;
         
-        $server = $this->registry->findServerForQueue($queueName, RouterConfig::SERVER_TAG_DEFAULT);
+        $server = $this->_getServerOrFail($queueName, RouterConfig::SERVER_TAG_DEFAULT);
         
         $config = [
             RouterConfig::REQUEST_CONSUMER_TIME_LIMIT => $timeout,
@@ -184,7 +185,7 @@ class Router
     {
         $forwardQueueName = $this->_prepareQueueName($queueName);
         
-        $server = $this->registry->findServerForQueue($forwardQueueName, RouterConfig::SERVER_TAG_DEFAULT);
+        $server = $this->_getServerOrFail($forwardQueueName, RouterConfig::SERVER_TAG_DEFAULT);
     
         return $server->getReplyReader(self::THREAD_MAIN, $this->replyQueueName, RouterConfig::CONFIG_REPLY_CONSUMER);
     }
@@ -194,7 +195,7 @@ class Router
         /* prepare read result */
         $forwardQueueName = $this->_prepareQueueName($forwardQueueName);
         
-        $server = $this->registry->findServerForQueue($forwardQueueName, RouterConfig::SERVER_TAG_DEFAULT);
+        $server = $this->_getServerOrFail($forwardQueueName, RouterConfig::SERVER_TAG_DEFAULT);
         
         $replyReader = $server->getReplyReader(self::THREAD_MAIN, $this->replyQueueName, RouterConfig::CONFIG_REPLY_CONSUMER);
         
@@ -202,17 +203,8 @@ class Router
     }
     
     /**
-     * @return array
-     */
-    public function getServers()
-    {
-        return $this->servers;
-    }
-    
-    /**
      * INTERNAL FUNCTIONS
      */
-    
     
     /**
      * @param $queueName
@@ -222,6 +214,22 @@ class Router
     private function _prepareQueueName($queueName)
     {
         return strtolower($queueName);
+    }
+
+    /**
+     * @param $queueName
+     * @param $serverTag
+     * 
+     * @return \Verse\Router\Model\RouterServer
+     */
+    private function _getServerOrFail($queueName, $serverTag) : RouterServer
+    {
+        $server = $this->registry->findServerForQueue($queueName, $serverTag);
+        if (!$server) {
+            throw new ServerNotConfigured('Server not found for queue: "' .$queueName. '" or tag: "'.$serverTag.'"');
+        }
+        
+        return $server;
     }
     
     /**

@@ -83,18 +83,28 @@ class RouterServer
      * @var RouterRequestConsumer[]
      */
     protected $requestConsumers = [];
-    
+
     /**
      * RouterServer constructor.
      *
-     * @param        $host
-     * @param int    $port
+     * @param string $host
+     * @param int $port
+     * @param string $user
+     * @param string $password
      * @param string $tag
      */
-    public function __construct($host, $port = RouterConfig::AMQP_RABBIT_DEFAULT_PORT, $tag = null)
+    public function __construct(
+        $host = RouterConfig::AMQP_RABBIT_DEFAULT_HOST, 
+        $port = RouterConfig::AMQP_RABBIT_DEFAULT_PORT, 
+        $user = RouterConfig::AMQP_RABBIT_DEFAULT_LOGIN,
+        $password = RouterConfig::AMQP_RABBIT_DEFAULT_PASSWORD,
+        $tag = null)
     {
         $this->host = $host;
         $this->port = $port;
+        $this->user = $user;
+        $this->password = $password;
+        
         $this->tag  = $tag;
     }
     
