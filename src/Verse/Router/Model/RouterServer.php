@@ -3,7 +3,8 @@
 
 namespace Verse\Router\Model;
 
-use Mu\Env;
+use Psr\Log\LoggerInterface;
+use Verse\Di\Env;
 use Verse\Router\Actors\RouterPublisher;
 use Verse\Router\Actors\RouterReplyReader;
 use Verse\Router\Actors\RouterRequestConsumer;
@@ -349,12 +350,10 @@ class RouterServer
     
     public function log ($msg, $context = []) 
     {
-        Env::isProfiling() && Env::getLogger()->debug($msg, $context);
-    }
-    
-    public function runtime ($msg, $context = []) 
-    {   
-        false && Env::isDebugMode() && Env::getLogger()->debug($msg, $context);
+        if ($logger = Env::getContainer()->bootstrap(LoggerInterface::class, false)) {
+            /* @var $logger LoggerInterface */ 
+            $logger->debug($msg, $context);
+        }
     }
     
     public function disconnectAll()

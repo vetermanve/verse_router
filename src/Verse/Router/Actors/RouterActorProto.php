@@ -35,7 +35,7 @@ abstract class RouterActorProto extends RouterModuleProto
             try {
                 return $this->processTask();
             } catch (\Exception $exception) {
-                $this->server->runtime(__METHOD__ . ' exception', [ 
+                $this->server->log(__METHOD__ . ' exception', [ 
                         'msg' => $exception->getMessage(),
                         'line' => $exception->getLine(),
                         'file' => $exception->getFile(),

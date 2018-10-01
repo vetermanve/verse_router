@@ -75,7 +75,6 @@ class RouterRequestConsumer extends RouterActorProto
         }
         
         while ($this->continueProcessing) {
-            $this->server->runtime(__METHOD__.' at '.round(microtime(1) - $startTime, 4));
             $this->consumer->read($listenTime);
     
             $processingTime = microtime(1) - $startTime;
@@ -86,7 +85,6 @@ class RouterRequestConsumer extends RouterActorProto
             try {
                 $this->refreshCallback && call_user_func($this->refreshCallback, $processingTime);    
             } catch (\Exception $exception) {
-                $this->server->runtime(__METHOD__.' refreshCallback '.get_class($exception).': '.$exception->getMessage());
                 $this->errorCallback && call_user_func($this->errorCallback, null, $exception);
             }
         }
@@ -126,7 +124,6 @@ class RouterRequestConsumer extends RouterActorProto
      */
     public function recovery()
     {
-        $this->server->runtime(__METHOD__, ['trace' => (new Tracer)->getTrace(10, 2)]);
         $this->loadDeps();
         $this->consumer->recovery();
     }

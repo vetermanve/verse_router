@@ -4,7 +4,7 @@
 namespace Verse\Router;
 
 
-use Uuid;
+use Verse\Router\Helper\Uuid;
 use Verse\Router\Actors\RouterRequestConsumer;
 use Verse\Router\Exceptions\EmptyRouterMessage;
 use Verse\Router\Exceptions\ServerNotConfigured;

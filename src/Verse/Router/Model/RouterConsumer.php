@@ -4,7 +4,7 @@
 namespace Verse\Router\Model;
 
 use Verse\Router\RouterConfig;
-use Uuid\Uuid;
+use Verse\Router\Helper\Uuid;
 
 class RouterConsumer extends RouterModuleProto
 {

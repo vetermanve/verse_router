@@ -1,16 +1,12 @@
 <?php
 
 
-namespace Router\Tests;
+namespace Verse\Router;
 
-use Router\Router;
-use Router\RouterConfig;
-use Testing\TestBase;
+use PHPUnit\Framework\TestCase;
 
 
-include (__DIR__.'/../../Testing/bootstrap.php');
-
-class RouterTest extends TestBase
+class RouterTest extends TestCase
 {
     public function testRouterConstructDefaultServer () 
     {
