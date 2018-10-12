@@ -361,7 +361,7 @@ class RouterServer
     public function disconnectAll()
     {
         foreach ($this->connections as $routerConnection) {
-            $routerConnection->amqpConnection->disconnect();
+            $routerConnection->amqpConnection && $routerConnection->amqpConnection->disconnect();
         }
     }
 }
