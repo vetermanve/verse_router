@@ -6,7 +6,6 @@ namespace Verse\Router\Actors;
 
 use Verse\Router\Model\RouterConsumer;
 use Verse\Router\RouterConfig;
-use Run\Util\Tracer;
 
 class RouterRequestConsumer extends RouterActorProto
 {
@@ -55,7 +54,6 @@ class RouterRequestConsumer extends RouterActorProto
     
     public function consume($callback, $errorCallback = null, $refreshCallback = null)
     {
-        $this->server->log(__METHOD__);
         $this->callback = $callback;
         $this->errorCallback = $errorCallback;
         $this->refreshCallback = $refreshCallback;
