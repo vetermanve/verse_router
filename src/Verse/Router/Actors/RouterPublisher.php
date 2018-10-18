@@ -62,7 +62,7 @@ class RouterPublisher extends RouterActorProto
     
     public function processTask()
     {
-        return $this->routerExchange->amqpExchange->publish($this->message, $this->targetQueue, $this->flags, $this->params);
+        return $this->routerExchange->getAmqpExchangeOrFail()->publish($this->message, $this->targetQueue, $this->flags, $this->params);
     }
     
     /**

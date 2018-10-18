@@ -36,11 +36,7 @@ class RouterChannel extends RouterModuleProto
     
     private function createChannel() {
         try {
-            if ($this->connection->amqpConnection) {
-                $this->amqpChannel = new \AMQPChannel($this->connection->amqpConnection);    
-            } else {
-                $this->_reportProblem('Empty connection');
-            }
+            $this->amqpChannel = new \AMQPChannel($this->connection->getAmqpConnectionOrFail());    
         } catch (\Exception $exception) {
             $this->_reportProblem($exception->getMessage());
         }
@@ -48,5 +44,17 @@ class RouterChannel extends RouterModuleProto
     
     private function loadConnection() {
         $this->connection = $this->server->getConnection($this->thread);
+    }
+
+    /**
+     * @return \AMQPChannel
+     */
+    public function getAmqpChannelOrFail() : \AMQPChannel
+    {
+        if (!$this->amqpChannel) {
+            throw new \RuntimeException('Empty amqpChannel');
+        }
+        
+        return $this->amqpChannel;
     }
 }

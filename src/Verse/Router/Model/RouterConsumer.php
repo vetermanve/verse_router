@@ -90,13 +90,12 @@ class RouterConsumer extends RouterModuleProto
         if ($this->queueNeedProtection) {
             $tag .= self::PROTECTION_TAG_POSTFIX.Uuid::v4();
         }
-        
-        $this->routerConnection->amqpConnection->setReadTimeout($timeout);
-        
+
         try {
-            $this->routerChannel->amqpChannel->setPrefetchCount(self::DEFAULT_PREFETCH_SIZE);
+            $this->routerConnection->getAmqpConnectionOrFail()->setReadTimeout($timeout);
+            $this->routerChannel->getAmqpChannelOrFail()->setPrefetchCount(self::DEFAULT_PREFETCH_SIZE);
             
-            $this->routerQueue->amqpQueue->consume(
+            $this->routerQueue->getAmqpQueueOrFail()->consume(
                 $this->internalConsumeCallback, 
                 $this->autoAck ? AMQP_AUTOACK : AMQP_NOPARAM, 
                 $tag
@@ -111,7 +110,7 @@ class RouterConsumer extends RouterModuleProto
             if (!$isRegularTimeout) {
                 $this->queueNeedProtection = true;
                 try {
-                    $this->routerQueue->amqpQueue->cancel($tag);    
+                    $this->routerQueue->getAmqpQueueOrFail()->cancel($tag);    
                 } catch (\Exception $_) {
                     
                 }
@@ -120,7 +119,7 @@ class RouterConsumer extends RouterModuleProto
             }
         }
         
-        if (!$this->queueNeedProtection) {
+        if (!$this->queueNeedProtection && $this->routerQueue->amqpQueue) {
             $this->routerQueue->amqpQueue->cancel($tag);
         }
     
@@ -132,7 +131,7 @@ class RouterConsumer extends RouterModuleProto
         $result = call_user_func($this->callback, $envelope);
         
         if (!$this->autoAck) {
-            $this->routerQueue->amqpQueue->ack($envelope->getDeliveryTag());    
+            $this->routerQueue->getAmqpQueueOrFail()->ack($envelope->getDeliveryTag());    
         }
         
         return $result;

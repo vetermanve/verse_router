@@ -3,11 +3,6 @@
 
 namespace Verse\Router\Model;
 
-
-use Verse\Router\Model\RouterChannel;
-use Verse\Router\Model\RouterServer;
-use Verse\Router\Model\RouterModuleProto;
-
 class RouterExchange extends RouterModuleProto
 {
     /**
@@ -33,12 +28,12 @@ class RouterExchange extends RouterModuleProto
     
     private function loadExchange() {
         try {
-            $exchange = new \AMQPExchange($this->channel->amqpChannel);
+            $exchange = new \AMQPExchange($this->channel->getAmqpChannelOrFail());
             $exchange->setName($this->exchangeName);
         
             if ($this->exchangeName) {
-                $exchange->setType(AMQP_EX_TYPE_DIRECT);
-                $exchange->setFlags(AMQP_DURABLE);
+                $exchange->setType(\AMQP_EX_TYPE_DIRECT);
+                $exchange->setFlags(\AMQP_DURABLE);
                 $exchange->declareExchange();
             }
             
@@ -57,5 +52,16 @@ class RouterExchange extends RouterModuleProto
         $this->loadChannel();
         $this->channel->recovery();
         $this->loadExchange();
+    }
+
+    /**
+     * @return \AMQPExchange
+     */
+    public function getAmqpExchangeOrFail() : \AMQPExchange
+    {
+        if (!$this->amqpExchange) {
+            throw new \RuntimeException('Empty amqpExchange');
+        }
+        return $this->amqpExchange;
     }
 }

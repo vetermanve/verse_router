@@ -36,7 +36,7 @@ class RouterConnection extends RouterModuleProto
             self::CONNECT_TIMEOUT => $this->configuration[RouterConfig::ROUTER_CONNECTION_CONNECT_TIMEOUT],
         ];
         
-        $connection = new \AMQPConnection($connectionData);
+        $connection = new AMQPConnection($connectionData);
         
         try {
             $connection->connect();
@@ -59,8 +59,11 @@ class RouterConnection extends RouterModuleProto
         }
     }
     
-    public function getAmqpConnection()
+    public function getAmqpConnectionOrFail() : AMQPConnection
     {
+        if (!$this->amqpConnection) {
+            throw new \RuntimeException('Empty amqpConnection');
+        }
         return $this->amqpConnection;
     }
 }

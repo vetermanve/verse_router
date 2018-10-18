@@ -20,8 +20,10 @@
     },
     "require": {
         "php": "^7.0",
-        "verse/env": "^0.0.2",
-        "psr/log": "^1.0"
+        "verse/env": "^0.0",
+        "psr/log": "^1.0",
+        "ext-json" : "*",
+        "ext-amqp" : "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
