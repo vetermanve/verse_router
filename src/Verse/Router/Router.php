@@ -56,12 +56,14 @@ class Router
         $port = $config[RouterConfig::ROUTER_CONNECTION_PORT] ?? RouterConfig::AMQP_RABBIT_DEFAULT_PORT;
         $login = $config[RouterConfig::ROUTER_CONNECTION_LOGIN] ?? RouterConfig::AMQP_RABBIT_DEFAULT_LOGIN;
         $password = $config[RouterConfig::ROUTER_CONNECTION_PASSWORD] ?? RouterConfig::AMQP_RABBIT_DEFAULT_PASSWORD;
+        $vhost = $config[RouterConfig::ROUTER_CONNECTION_VHOST] ??  RouterConfig::AMQP_RABBIT_DEFAULT_VHOST;
         
         $defaultServer = new RouterServer(
             $host, 
             $port,
             $login, 
             $password,
+            $vhost,
             RouterConfig::SERVER_TAG_DEFAULT
         );
         

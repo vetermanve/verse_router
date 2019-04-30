@@ -17,6 +17,7 @@ class RouterConnection extends RouterModuleProto
     const CONNECT_TIMEOUT = 'connect_timeout';
     const LOGIN           = 'login';
     const PASSWORD        = 'password';
+    const VHOST           = 'vhost';
 
     /**
      * @var AMQPConnection;
@@ -30,6 +31,7 @@ class RouterConnection extends RouterModuleProto
             self::PORT            => $this->configuration[RouterConfig::ROUTER_CONNECTION_PORT],
             self::LOGIN           => $this->configuration[RouterConfig::ROUTER_CONNECTION_LOGIN],
             self::PASSWORD        => $this->configuration[RouterConfig::ROUTER_CONNECTION_PASSWORD],
+            self::VHOST           => $this->configuration[RouterConfig::ROUTER_CONNECTION_VHOST],
             
             self::READ_TIMEOUT    => $this->configuration[RouterConfig::ROUTER_CONNECTION_READ_TIMEOUT],
             self::WRITE_TIMEOUT   => $this->configuration[RouterConfig::ROUTER_CONNECTION_WRITE_TIMEOUT],

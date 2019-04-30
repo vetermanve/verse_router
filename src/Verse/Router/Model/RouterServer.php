@@ -26,6 +26,27 @@ class RouterServer
      * @var integer
      */
     private $port;
+
+    /**
+     * Виртуальный хост
+     *
+     * @var string
+     */
+    private $vhost;
+
+    /**
+     * Юзер
+     *
+     * @var string
+     */
+    private $user;
+
+    /**
+     * Пароль
+     *
+     * @var string
+     */
+    private $password;
     
     /**
      * Тэг сервера
@@ -92,20 +113,24 @@ class RouterServer
      * @param int $port
      * @param string $user
      * @param string $password
+     * @param string $vhost
      * @param string $tag
      */
     public function __construct(
-        $host = RouterConfig::AMQP_RABBIT_DEFAULT_HOST, 
-        $port = RouterConfig::AMQP_RABBIT_DEFAULT_PORT, 
-        $user = RouterConfig::AMQP_RABBIT_DEFAULT_LOGIN,
-        $password = RouterConfig::AMQP_RABBIT_DEFAULT_PASSWORD,
-        $tag = null)
+        $host       = RouterConfig::AMQP_RABBIT_DEFAULT_HOST,
+        $port       = RouterConfig::AMQP_RABBIT_DEFAULT_PORT,
+        $user       = RouterConfig::AMQP_RABBIT_DEFAULT_LOGIN,
+        $password   = RouterConfig::AMQP_RABBIT_DEFAULT_PASSWORD,
+        $vhost      = RouterConfig::AMQP_RABBIT_DEFAULT_VHOST,
+        $tag        = null
+    )
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->user = $user;
+        $this->host     = $host;
+        $this->port     = $port;
+        $this->user     = $user;
         $this->password = $password;
-        
+        $this->vhost    = $vhost;
+
         $this->tag  = $tag;
     }
     
@@ -268,6 +293,7 @@ class RouterServer
                 RouterConfig::ROUTER_CONNECTION_PORT            => $this->port,
                 RouterConfig::ROUTER_CONNECTION_LOGIN           => $this->user,
                 RouterConfig::ROUTER_CONNECTION_PASSWORD        => $this->password,
+                RouterConfig::ROUTER_CONNECTION_VHOST           => $this->vhost,
                 RouterConfig::ROUTER_CONNECTION_READ_TIMEOUT    => RouterConfig::ROUTER_CONNECTION_DEFAULT_READ_TIMEOUT,
                 RouterConfig::ROUTER_CONNECTION_WRITE_TIMEOUT   => RouterConfig::ROUTER_CONNECTION_DEFAULT_WRITE_TIMEOUT,
                 RouterConfig::ROUTER_CONNECTION_CONNECT_TIMEOUT => RouterConfig::ROUTER_CONNECTION_DEFAULT_CONNECT_TIMEOUT,
@@ -327,6 +353,22 @@ class RouterServer
     public function setPort($port)
     {
         $this->port = $port;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVhost()
+    {
+        return $this->vhost;
+    }
+
+    /**
+     * @param string $vhost
+     */
+    public function setVhost($vhost)
+    {
+        $this->vhost = $vhost;
     }
     
     public function getId()
