@@ -19,11 +19,10 @@
         "ext-amqp": "This library required to have AMQP extension installed"
     },
     "require": {
-        "php": "^7.0",
-        "verse/env": "^0.0",
+        "php": "^7.4 || 8.*",
+        "verse/env": "*",
         "psr/log": "^1.0",
-        "ext-json" : "*",
-        "ext-amqp" : "*"
+        "ext-json" : "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
