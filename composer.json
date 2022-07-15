@@ -21,7 +21,7 @@
     "require": {
         "php": "^7.4 || 8.*",
         "verse/env": "*",
-        "psr/log": "^1.0",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0",
         "ext-json" : "*"
     },
     "require-dev": {
